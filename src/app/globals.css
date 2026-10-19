@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   GUIA DE ESTILO · ZUCCÄ CAFFÈ
+   Identidade tirada da capa do cardápio (azul-marinho com letras e arabescos
+   brancos) e do salão (paredes bege, mesas de madeira, tijolo aparente).
+   Clima: clássico, acolhedor, artesanal.
+
+   CORES (variáveis em :root; no Tailwind viram as classes entre parênteses)
+   --azul-marinho   #1C2B4B  (marinho)    header, títulos, botões principais
+   --azul-profundo  #131E36  (profundo)   rodapé, hover dos botões
+   --branco-perola  #F5F2EA  (perola)     texto sobre azul, ornamentos, cards
+   --bege-creme     #EFE6D6  (creme)      fundo principal
+   --bege-areia     #E2D4BC  (areia)      seções alternadas
+   --caramelo       #B07A4A  (caramelo)   linhas, molduras, ícones, ornamentos
+   --terracota      #A85A3C  (terracota)  detalhes de destaque (não-texto)
+   --cafe-escuro    #2B2420  (cafe)       texto corrido sobre bege
+
+   Variações para TEXTO (o caramelo e a terracota originais ficam abaixo de
+   4.5:1 sobre os beges, então texto usa estes tons mais escuros):
+   --caramelo-escuro  #785332  (caramelo-escuro)  preços, rótulos, botão secundário
+   --terracota-escuro #8A4A31  (terracota-escuro) links
+
+   CONTRASTE (WCAG AA, mínimo 4.5:1 para texto normal)
+   marinho / creme 11.3 · marinho / areia 9.6 · café / creme 12.3
+   pérola / marinho 12.5 · pérola / profundo 14.8
+   caramelo-escuro / areia 4.7 · / creme 5.5 · / pérola 6.1
+   terracota-escuro / areia 4.6 · / creme 5.5 · / pérola 6.1
+   Não use caramelo/terracota originais em texto; nem café sobre azul.
+
+   FONTES (Google Fonts, carregadas em app/layout.tsx via next/font)
+   --fonte-titulo   Cinzel 400/600       marca, H1, H2 (caixa alta, 0.08em)
+   --fonte-destaque Cormorant Garamond   subtítulos e frases (itálico)
+   --fonte-texto    Jost 300/400/500     texto, preços, menu, botões
+   Nome sempre "ZUCCÄ CAFFÈ", com trema e acento grave.
+
+   COMPONENTES
+   .moldura         borda dupla fina, estilo capa de cardápio
+   <Ornament>       arabesco SVG (currentColor: caramelo ou pérola)
+   <SectionDivider> ornamento sobre a emenda entre duas seções
+   Botões (lib/ui.ts): principal marinho → profundo no hover;
+                       secundário com contorno caramelo; "light" sobre azul.
+   Cantos 6–10px (rounded-md / rounded-lg), sombras quentes (shadow-quente).
+
+   As mesmas cores em hexadecimal ficam em src/config/theme.ts para lugares
+   que não leem CSS (imagem de compartilhamento, cor da barra do navegador).
+   ========================================================================== */
+
+:root {
+  --azul-marinho: #1c2b4b;
+  --azul-profundo: #131e36;
+  --branco-perola: #f5f2ea;
+  --bege-creme: #efe6d6;
+  --bege-areia: #e2d4bc;
+  --caramelo: #b07a4a;
+  --terracota: #a85a3c;
+  --cafe-escuro: #2b2420;
+
+  --caramelo-escuro: #785332;
+  --terracota-escuro: #8a4a31;
+
+  /* As variáveis --font-* são criadas pelo next/font em layout.tsx */
+  --fonte-titulo: var(--font-cinzel), "Times New Roman", serif;
+  --fonte-destaque: var(--font-cormorant), Georgia, serif;
+  --fonte-texto: var(--font-jost), "Helvetica Neue", Arial, sans-serif;
+
+  /* Cor das linhas da moldura; seções azuis trocam para pérola */
+  --cor-moldura: var(--caramelo);
+}
+
+@theme inline {
+  --color-marinho: var(--azul-marinho);
+  --color-profundo: var(--azul-profundo);
+  --color-perola: var(--branco-perola);
+  --color-creme: var(--bege-creme);
+  --color-areia: var(--bege-areia);
+  --color-caramelo: var(--caramelo);
+  --color-caramelo-escuro: var(--caramelo-escuro);
+  --color-terracota: var(--terracota);
+  --color-terracota-escuro: var(--terracota-escuro);
+  --color-cafe: var(--cafe-escuro);
+
+  --font-titulo: var(--fonte-titulo);
+  --font-destaque: var(--fonte-destaque);
+  --font-sans: var(--fonte-texto);
+
+  /* Sombras quentes, tingidas de café em vez de preto */
+  --shadow-quente: 0 18px 40px -24px color-mix(in srgb, var(--cafe-escuro) 45%, transparent);
+  --shadow-quente-forte: 0 28px 60px -28px color-mix(in srgb, var(--cafe-escuro) 60%, transparent);
+}
+
+@utility container-site {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: 1rem;
+
+  @media (width >= 640px) {
+    padding-inline: 1.5rem;
+  }
+  @media (width >= 1024px) {
+    padding-inline: 2rem;
+  }
+}
+
+/* Borda dupla fina, como a capa do cardápio. O elemento precisa de position. */
+@utility moldura {
+  border: 1px solid var(--cor-moldura);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    z-index: 1;
+    border: 1px solid var(--cor-moldura);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--bege-creme);
+    color: var(--cafe-escuro);
+    font-family: var(--fonte-texto);
+    /* Evita negrito e itálico "falsos" gerados pelo navegador */
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--fonte-titulo);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--azul-marinho);
+  }
+}
+
+/* Foco visível em toda a página */
+:focus-visible {
+  outline: 3px solid var(--azul-marinho);
+  outline-offset: 3px;
+}
+.on-navy {
+  --cor-moldura: color-mix(in srgb, var(--branco-perola) 55%, transparent);
+}
+.on-navy :focus-visible {
+  outline-color: var(--branco-perola);
+}
+
+/* Animações ao rolar: só escondem o conteúdo quando o JS está ativo */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 700ms ease,
+    transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.js .reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.hero-card {
+  animation: hero-in 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js .reveal,
+  .hero-card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+}
