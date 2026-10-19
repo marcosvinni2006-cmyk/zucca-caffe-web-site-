@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cinzel, Cormorant_Garamond, Jost } from "next/font/google";
+import localFont from "next/font/local";
 import { FloatingWhatsApp } from "@/components/FloatingWhatsApp";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -8,25 +8,35 @@ import { palette } from "@/config/theme";
 import { cafeJsonLd } from "@/lib/jsonld";
 import "./globals.css";
 
-// Fontes da identidade (ver guia de estilo em globals.css)
-const cinzel = Cinzel({
-  subsets: ["latin"],
-  weight: ["400", "600"],
+// Fontes da identidade (ver guia de estilo em globals.css).
+// Arquivos em app/fonts (Google Fonts via Fontsource, licença OFL): o build não
+// depende de baixar nada do Google, o que fazia o deploy falhar às vezes.
+const cinzel = localFont({
+  src: [
+    { path: "./fonts/cinzel-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/cinzel-latin-600-normal.woff2", weight: "600", style: "normal" },
+  ],
   variable: "--font-cinzel",
   display: "swap",
 });
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  style: ["normal", "italic"],
+const cormorant = localFont({
+  src: [
+    { path: "./fonts/cormorant-garamond-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/cormorant-garamond-latin-400-italic.woff2", weight: "400", style: "italic" },
+    { path: "./fonts/cormorant-garamond-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/cormorant-garamond-latin-500-italic.woff2", weight: "500", style: "italic" },
+  ],
   variable: "--font-cormorant",
   display: "swap",
 });
 
-const jost = Jost({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
+const jost = localFont({
+  src: [
+    { path: "./fonts/jost-latin-300-normal.woff2", weight: "300", style: "normal" },
+    { path: "./fonts/jost-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/jost-latin-500-normal.woff2", weight: "500", style: "normal" },
+  ],
   variable: "--font-jost",
   display: "swap",
 });
